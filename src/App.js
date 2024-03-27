@@ -1,25 +1,61 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+// Define a custom dictionary of words and their corrections
+const customDictionary = {
+  teh: "the",
+  wrok: "work",
+  fot: "for",
+  exampl: "example",
+};
+
+class SpellCheckApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputText: "",
+      suggestedText: "",
+    };
+  }
+
+  handleInputChange = (e) => {
+    const text = e.target.value;
+    this.setState({ inputText: text });
+
+    // Implement a basic spelling check and correction
+    const words = text.split(" ");
+    const correctedWords = words.map((word) => {
+      const correctedWord = customDictionary[word.toLowerCase()];
+      return correctedWord || word;
+    });
+
+    const correctedText = correctedWords.join(" ");
+
+    // Set the suggested text (first corrected word)
+    const firstCorrection = correctedWords.find(
+      (word, index) => word !== words[index]
+    );
+    this.setState({ suggestedText: firstCorrection || "" });
+  };
+
+  render() {
+    return (
+      <div>
+        <h1>Spell Check and Auto-Correction</h1>
+        <textarea
+          value={this.state.inputText}
+          onChange={this.handleInputChange}
+          placeholder="Enter text..."
+          rows={5}
+          cols={40}
+        />
+        {this.state.suggestedText && (
+          <p>
+            Did you mean: <strong>{this.state.suggestedText}</strong>?
+          </p>
+        )}
+      </div>
+    );
+  }
 }
 
-export default App;
+export default SpellCheckApp;
